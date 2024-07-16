@@ -9,8 +9,8 @@ import argparse
 parser = argparse.ArgumentParser(description="Copy data between rclone remotes")
 parser.add_argument("--limit", type=int, default=10, help="Space limit in TB")
 
-# Argument --free to indicate that all available space should be freed in the source remote by moving data to other remotes
-parser.add_argument("--free", action="store_true", help="Free up space in the source remote")
+# Argument --free to indicate what remote to free up space
+parser.add_argument("--free", help="Remote to free up space")
 
 # Argument --remotes to specify the remotes to use, it receives a comma-separated string and converts it to a list
 parser.add_argument("--remotes", required=True, help="List of remotes separated by commas")
