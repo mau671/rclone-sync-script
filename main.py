@@ -272,7 +272,7 @@ def main():
         if source_size > 0:
             
             # Show the total size of the source remote
-            print(f'[yellow]Total size of {source_remote}: {calculate_size(source_size)}[/yellow]')
+            print(f'[yellow]Total size of {source_remote} {calculate_size(source_size)}[/yellow]')
 
             excess_size = source_size
             while excess_size > 0:
@@ -285,8 +285,7 @@ def main():
                                 print(f'[yellow]Skipping {destination_remote} due to insufficient space. Available space: {calculate_size(available_space)}[/yellow]')
                                 continue
 
-                            transfer_size = excess_size
-                            max_transfer_size = rclone_calculate_size(transfer_size)
+                            max_transfer_size = rclone_calculate_size(excess_size)
 
                             print(f"Copying {max_transfer_size} from {source_remote} to {destination_remote}")
                             copied_size = copy_files(source_remote, destination_remote, max_transfer_size)
