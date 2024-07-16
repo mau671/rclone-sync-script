@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy the necessary files to the container
-COPY distribute.py /app/distribute.py
+COPY distribute.py /app/main.py
 COPY rclone.conf /app/rclone.conf
 COPY requirements.txt /app/requirements.txt
 
