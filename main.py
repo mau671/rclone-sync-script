@@ -129,8 +129,8 @@ def after_copy(destination, input_file, output_file):
 
     with open(output_file, 'w', encoding='utf-8') as file:
         for line in lines:
-            if 'INFO' in line and 'Copied' in line:
-                match = re.search(r'INFO\s+:\s+(.*?): Copied', line)
+            if 'INFO' in line and ('Moved' in line or 'Copied' in line):
+                match = re.search(r'INFO\s+:\s+(.*?): (Moved|Copied)', line)
                 if match:
                     file.write(match.group(1) + '\n')
     try:
@@ -154,6 +154,8 @@ def copy_files(source, destination, max_transfer_size):
         '--tpslimit=8',
         '--onedrive-delta',
         '--fast-list',
+        '--onedrive-hard-delete',
+        '--onedrive-no-versions',
         '--check-first',
         '--order-by=size,desc',
         '--size-only',
@@ -164,11 +166,11 @@ def copy_files(source, destination, max_transfer_size):
         f'--config={args.config}'
     ]
     start_time = time.time()
-    rclone.copy(source, destination, ignore_existing=True, show_progress=True, args=rclone_options)
+    rclone.move(source, destination, ignore_existing=True, show_progress=True, args=rclone_options)
     total_time = calculate_time(time.time() - start_time)
     size, files = after_copy(f'{destination}', log_file, output_file)
     size_human_readable = calculate_size(size)
-    print(f'[green]Copy completed, total size: {size_human_readable}, total files: {files}, elapsed time: {total_time}[/green]')
+    print(f'[green]Operation completed, total size: {size_human_readable}, total files: {files}, elapsed time: {total_time}[/green]')
     try:
         os.remove(output_file)
     except Exception as e:
@@ -279,10 +281,6 @@ def main():
                             print(f"Copying {max_transfer_size} from {source_remote} to {destination_remote}")
                             copied_size = copy_files(source_remote, destination_remote, max_transfer_size)
 
-                            # Check for duplicates and delete them
-                            check_files(source_remote, destination_remote, 'duplicate_files.txt')
-                            delete_files(source_remote, destination_remote, 'duplicate_files.txt')
-
                             excess_size -= copied_size
 
                         if excess_size <= 0:
@@ -311,10 +309,6 @@ def main():
 
                                 print(f"Copying {max_transfer_size} from {source_remote} to {destination_remote}")
                                 copied_size = copy_files(source_remote, destination_remote, max_transfer_size)
-
-                                # Check for duplicates and delete them
-                                check_files(source_remote, destination_remote, 'duplicate_files.txt')
-                                delete_files(source_remote, destination_remote, 'duplicate_files.txt')
 
                                 excess_size -= copied_size
 
