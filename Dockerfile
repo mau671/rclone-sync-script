@@ -16,6 +16,10 @@ WORKDIR /app
 COPY main.py /app/main.py
 COPY requirements.txt /app/requirements.txt
 
+# Install the rclone-python package from source
+
+RUN git clone https://github.com/mau671/rclone_python.git && cd rclone_python && python setup.py install
+
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 

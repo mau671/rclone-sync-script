@@ -1,3 +1,6 @@
 colorama
 rich
+<<<<<<< HEAD
 git+https://github.com/mau671/rclone_python.git@master
+=======
+>>>>>>> 93fcd2c269f70b79647dabc0f792602500a44b38
