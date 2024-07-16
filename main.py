@@ -117,7 +117,15 @@ def get_remote_size(remote):
     """
     Gets the total size of the used space in a remote.
     """
-    size = rclone.about(remote, args=[f'--config={args.config}'])
+    rclone_options = [
+        '--user-agent="ISV|rclone.org|rclone/v1.67.0"',
+        '--tpslimit=8',
+        '--onedrive-delta',
+        '--fast-list',
+        '--checkers=8',
+        f'--config={args.config}'
+    ]
+    size = rclone.about(remote, args=rclone_options)
     return size['bytes']
 
 def after_copy(destination, input_file, output_file):
