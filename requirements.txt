@@ -1,0 +1,3 @@
+colorama
+rich
+git+https://github.com/mau671/rclone_python.git@main
