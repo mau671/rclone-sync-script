@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Install necessary dependencies, including rclone
 RUN apt-get update && apt-get install -y \
-    curl unzip \
+    curl unzip git \
     && curl https://rclone.org/install.sh | bash
 
 # Set the working directory in the container
