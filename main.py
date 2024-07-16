@@ -126,7 +126,7 @@ def get_remote_size(remote):
         f'--config={args.config}'
     ]
     size = rclone.about(remote, args=rclone_options)
-    return size['bytes']
+    return size['used'], size['free']
 
 def after_copy(destination, input_file, output_file):
     """
@@ -267,23 +267,25 @@ def main():
         
         print(f"[yellow]Freeing up space in the source remotes[/yellow]")
         
-        source_size = get_remote_size(source_remote)
+        source_size = get_remote_size(source_remote)[0]
         # Moves all data from the remote specified in --free to other remotes to free up space, respecting the limit of each remote specified in --limit, source remote must be completely empty
         if source_size > 0:
-            print(f'[yellow]{source_remote} exceeds the space limit: {calculate_size(source_size)}[/yellow]')
+            
+            # Show the total size of the source remote
+            print(f'[yellow]Total size of {source_remote}: {calculate_size(source_size)}[/yellow]')
 
             excess_size = source_size
             while excess_size > 0:
                 for i, destination_remote in enumerate(remotes):
                     if destination_remote != source_remote:
-                        destination_size = get_remote_size(destination_remote)
-                        available_space = space_limit_tb - destination_size
+                        print(f'[yellow]Checking {destination_remote}[/yellow]')
+                        available_space = get_remote_size(destination_remote)[1]
                         if available_space > 0:
                             if available_space < 0.5 * 1024 ** 4:
                                 print(f'[yellow]Skipping {destination_remote} due to insufficient space. Available space: {calculate_size(available_space)}[/yellow]')
                                 continue
 
-                            transfer_size = min(excess_size, available_space)
+                            transfer_size = excess_size
                             max_transfer_size = rclone_calculate_size(transfer_size)
 
                             print(f"Copying {max_transfer_size} from {source_remote} to {destination_remote}")
@@ -298,14 +300,14 @@ def main():
         print(f"[yellow]Copying data between remotes[/yellow]")
 
         for i, source_remote in enumerate(remotes):
-            source_size = get_remote_size(source_remote)
+            source_size = get_remote_size(source_remote)[0]
             if source_size > space_limit_tb:
                 print(f'[yellow]{source_remote} exceeds the space limit: {calculate_size(source_size)}[/yellow]')
                 excess_size = source_size - space_limit_tb
                 while excess_size > 0:
                     for j, destination_remote in enumerate(remotes):
                         if i != j:
-                            destination_size = get_remote_size(destination_remote)
+                            destination_size = get_remote_size(destination_remote)[0]
                             available_space = space_limit_tb - destination_size
                             if available_space > 0:
                                 if available_space < 0.5 * 1024 ** 4:
