@@ -159,7 +159,7 @@ def copy_files(source, destination, max_transfer_size):
         '--checkers=8',
         f'--max-transfer={max_transfer_size}',
         '--user-agent="ISV|rclone.org|rclone/v1.67.0"',
-        '--tpslimit=8',
+        '--tpslimit=4',
         '--onedrive-delta',
         '--fast-list',
         '--onedrive-hard-delete',
@@ -172,7 +172,7 @@ def copy_files(source, destination, max_transfer_size):
         f'--log-file={log_file}',
         '--log-level', 'INFO',
         f'--config={args.config}',
-        '--onedrive-chunk-size', '250M'
+        '--onedrive-chunk-size', '100M'
     ]
     start_time = time.time()
     rclone.move(source, destination, ignore_existing=True, show_progress=True, args=rclone_options)
