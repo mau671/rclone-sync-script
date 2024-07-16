@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.env
+.DS_Store
+.vscode/
+*.log
+rclone.conf
+*.txt
