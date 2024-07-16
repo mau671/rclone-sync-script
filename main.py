@@ -171,7 +171,8 @@ def copy_files(source, destination, max_transfer_size):
         '--ignore-checksum',
         f'--log-file={log_file}',
         '--log-level', 'INFO',
-        f'--config={args.config}'
+        f'--config={args.config}',
+        '--onedrive-chunk-size', '250M'
     ]
     start_time = time.time()
     rclone.move(source, destination, ignore_existing=True, show_progress=True, args=rclone_options)
