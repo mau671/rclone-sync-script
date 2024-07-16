@@ -14,7 +14,6 @@ WORKDIR /app
 
 # Copy the necessary files to the container
 COPY main.py /app/main.py
-COPY rclone.conf /app/rclone.conf
 COPY requirements.txt /app/requirements.txt
 
 # Install Python dependencies
